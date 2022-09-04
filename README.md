@@ -1,11 +1,13 @@
 # configen
 
 [![package](https://github.com/lingjie00/configen/actions/workflows/project-actions.yml/badge.svg)](https://github.com/lingjie00/configen/actions/workflows/project-actions.yml)
-[![Docker](https://github.com/lingjie00/configen/actions/workflows/docker-actions.yml/badge.svg)](https://github.com/lingjie00/configen/actions/workflows/docker-actions.yml)
 
 # Project overview
 
-Manage Json and Yaml config using folder structure
+Manage Json and Yaml config using folder structure.
+
+The API documentation is available at
+(https://lingjie00.github.io/configen/)[https://lingjie00.github.io/configen/]
 
 # Folder structure
 
