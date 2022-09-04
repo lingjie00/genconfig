@@ -1,0 +1,27 @@
+{
+    "name": "config-01",
+    "training": true,
+    "parameters": {
+        "num_nodes": 200,
+        "num_samples": 100,
+        "max_time": 40
+    },
+    "pipeline": [
+        {
+            "name": "extraction",
+            "function": "etl.extraction"
+        },
+        {
+            "name": "training",
+            "function": "model.training"
+        },
+        {
+            "name": "evaluation",
+            "function": "model.evaluation"
+        },
+        {
+            "name": "deployment",
+            "function": "cloud.deploy"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+[flake8]
+exclude = 
+    # ignore init file
+    configen/__init__.py,
+    # No need to traverse our git directory
+    .git,
+    # There's no value in checking cache directories
+    __pycache__,
+# set the max text length
+max-line-length = 100
+max-doc-length = 100
+# set docs string convention
+docstring-convention=numpy
+# set default quotes as "
+inline-quotes = double

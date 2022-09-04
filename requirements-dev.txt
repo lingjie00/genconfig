@@ -1,0 +1,30 @@
+# lsp
+python-lsp-server[all]
+
+# testing
+pytest
+coverage
+
+# linter and formatting
+black
+isort
+
+# generate API documentation
+pdoc
+
+# a list of helpful flake8 and extensions
+flake8
+flake8-isort
+flake8-black
+dlint
+flake8-requirements
+flake8-quotes
+flake8-functions-names
+flake8-variables-names
+flake8-comments
+flake8-docstrings
+flake8-import-order
+flake8-import-style
+flake8-annotations-coverage
+flake8-annotations
+flake8-type-checking
