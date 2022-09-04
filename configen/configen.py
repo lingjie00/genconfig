@@ -1,2 +1,2 @@
-"""Entry point."""
-print("hello")
+"""Entry point for program"""
+print("Entry point")
