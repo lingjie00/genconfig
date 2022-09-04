@@ -7,7 +7,7 @@
 Manage Json and Yaml config using folder structure.
 
 The API documentation is available at
-(https://lingjie00.github.io/configen/)[https://lingjie00.github.io/configen/]
+[https://lingjie00.github.io/configen/](https://lingjie00.github.io/configen/)
 
 # Folder structure
 
