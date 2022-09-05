@@ -1,20 +1,6 @@
 # lsp
 python-lsp-server[all]
 
-# scientific operation
-numpy
-scipy
-
-# data frame
-pandas
-
-# notebook
-jupyter
-
-# visualisation
-matplotlib
-seaborn
-
 # testing
 pytest
 coverage
