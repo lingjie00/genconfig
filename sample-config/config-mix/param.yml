@@ -1,0 +1,11 @@
+# storing the model training parameters
+---
+parameters:
+  # number of compute nodes
+  num_nodes: 200
+  # number of MC samples
+  num_samples: 100
+  # the max model training time allowed
+  # early stopping is implemented. Therefore, this max time should be used as a
+  # safeguard for damage control instead of preventing over-fitting.
+  max_time: 40

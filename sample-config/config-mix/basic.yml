@@ -1,0 +1,6 @@
+# Here is where we define the config basic info such as name
+---
+name: "config-01"
+# if to re-train the model
+# if training is false, will simply deploy the model
+training: true

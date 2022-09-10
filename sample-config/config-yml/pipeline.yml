@@ -1,0 +1,12 @@
+# pipeline
+---
+# model training pipeline
+pipeline:
+  - name: "extraction"
+    function: "etl.extraction"
+  - name: "training"
+    function: "model.training"
+  - name: "evaluation"
+    function: "model.evaluation"
+  - name: "deployment"
+    function: "cloud.deploy"

@@ -1,11 +1,4 @@
 {
-    "name": "config-01",
-    "training": true,
-    "parameters": {
-        "num_nodes": 200,
-        "num_samples": 100,
-        "max_time": 40
-    },
     "pipeline": [
         {
             "name": "extraction",
@@ -23,15 +16,5 @@
             "name": "deployment",
             "function": "cloud.deploy"
         }
-    ],
-    "function": {
-        "function1": {
-            "name": "transform",
-            "param": "col1"
-        },
-        "function2": {
-            "name": "load",
-            "param": "col2"
-        }
-    }
+    ]
 }

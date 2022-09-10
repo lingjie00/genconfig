@@ -54,17 +54,6 @@ The API documentation is available at
 
 ## Parameters
 
-- Depth of layers
-    - The depth of layer is one key consideration in converting a single config
-      file into the folder structure.
-    - The default behaviour is to crate nested folder until a single file
-      contains no sub-keys. However, in some cases this might not be ideal.
-      Therefore, user can control the depth of layer through the following
-      parameter.
-    ```bash
-    # default is -1, file does not contain sub-key
-    configen --config-path=config_path --depth=-1
-    ```
 - Ignore
     - User can choose to ignore some keys and not expand into sub-folders
     ```bash
