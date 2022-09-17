@@ -5,13 +5,14 @@ from contextlib import contextmanager
 import os
 from typing import Tuple
 
-from configen import Parser, JsonParser, YamlParser
+from configen.base_parser import Parser
+from configen.parsers import parser_list
 
 
 class TestParser(unittest.TestCase):
     """Perform unit test for the parsers."""
 
-    parsers: Tuple[Parser] = (JsonParser, YamlParser)
+    parsers: Tuple[Parser] = parser_list
     """The parsers to test."""
 
     # ground truth
@@ -55,14 +56,16 @@ class TestParser(unittest.TestCase):
     new_config = {"name": "new"}
 
     # parser configs
-    dir_path = "sample-config"
+    base_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = os.path.join(base_path, os.pardir, "sample-config")
+    dir_path = os.path.abspath(dir_path)
     config_path = {
-        "json": f"{dir_path}/sample.json",
-        "yml": f"{dir_path}/sample.yml"
+        "json": os.path.join(dir_path, "sample.json"),
+        "yml": os.path.join(dir_path, "sample.yml")
     }
     config_folder = {
-        "json": f"{dir_path}/config-json",
-        "yml": f"{dir_path}/config-yml"
+        "json": os.path.join(dir_path, "config-json/"),
+        "yml": os.path.join(dir_path, "config-yml/")
     }
     config_dict_raw = {}
 
@@ -90,7 +93,6 @@ class TestParser(unittest.TestCase):
         with self.write_tempfile(
                 filename="config.json",
                 config=config) as filepath:
-            print(filepath)
             with open(filepath) as file:
                 self.assertEqual(file.read(), str(config), file.read())
 
@@ -146,7 +148,6 @@ class TestParser(unittest.TestCase):
                 # rely on the implemented load method
                 loaded_config = parser._load_method(filename)
                 self.assertIsInstance(loaded_config, dict)
-                print(type(loaded_config))
                 self.assertEqual(loaded_config, self.config_truth, parser)
 
     def test_load(self):
@@ -208,6 +209,7 @@ class TestParser(unittest.TestCase):
 
     def test_ignore(self):
         """Function should be able to ignore some config files."""
+        # should ignore the "pipeline" from the config
         config_truth = self.config_truth.copy()
         config_truth.pop("pipeline")
         for parser in self.parsers:
@@ -215,6 +217,8 @@ class TestParser(unittest.TestCase):
             ext = parser.extension
             parser.load(config=self.config_folder[ext], ignored="pipeline.*")
             loaded_config = dict(parser.config)
+            print(loaded_config)
+            print(config_truth)
             self.assertEqual(loaded_config, config_truth, parser)
 
     def test_convert(self):

@@ -2,10 +2,14 @@
 from __future__ import annotations
 
 import abc
+import logging
 import os
 import re
-from collections import deque
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional, Any, Dict
+
+from configen.utils import merge
+
+logger = logging.getLogger(__name__)
 
 
 class Parser:
@@ -16,13 +20,13 @@ class Parser:
     config: dict = {}
     """The loaded config."""
 
-    def __init__(self, config: Union[dict, None] = None):
+    def __init__(self, config: Optional[dict] = None):
         """Initiate object with optional initial config."""
         if config is not None:
             assert isinstance(
                 config, dict
             ), f"Expected config to be dict get {type(config)}"
-        self.config = config
+            self.config = config
 
     def __eq__(self, parser: object) -> bool:
         """Compares if given parser is same as self."""
@@ -48,7 +52,8 @@ class Parser:
 
             `_check_extension("config.json")` -> config.json
         """
-        assert isinstance(input_path, str), f"expected type str got {type(input_path)}"
+        assert isinstance(input_path, str),\
+            f"expected type str got {type(input_path)}"
 
         filename, file_extension = os.path.splitext(input_path)
         if file_extension != "." + self.extension:
@@ -102,7 +107,52 @@ class Parser:
                 return True
         return False
 
-    def load(self, config: Union[str, dict, None], ignored: Tuple[str] = ()) -> Parser:
+    def join(
+            self,
+            curr_config: Dict[str, Any],
+            filepath: str,
+            ignored: Tuple[str]):
+        """Joins config.
+
+        Params:
+            curr_config: the existing loaded config
+            filepath: file path to the new config to be loaded
+            ignored: list of file names to be ignored
+
+        Returns:
+            updated config
+        """
+        # the current loaded filepath
+        logger.debug(f"{filepath=}")
+        # base folder will be used as the key
+        base_folder = os.path.basename(filepath)
+        filename, file_extension = os.path.splitext(filepath)
+
+        if self._search_match(filepath, ignored):
+            # ignore the file if it's in the ignored list
+            return curr_config
+
+        if file_extension == "." + self.extension:
+            # load the file if it's of the config format
+            logger.info(f"{'='*5} Reading {filepath}")
+            new_config = self._load_method(filepath)
+            curr_config = merge(curr_config, new_config)
+            logger.debug(f"New config = {curr_config}")
+
+        elif os.path.isdir(filepath):
+            # if the path is a folder, iteratively add the folder files
+            files = os.listdir(filepath)
+            for file in files:
+                new_path = os.path.join(filepath, file)
+                curr_config[base_folder] = self.join(
+                    curr_config.get(base_folder, {}),
+                    new_path, ignored)
+        return curr_config
+
+    def load(
+        self, config: Union[str, dict, None], ignored: Tuple[str] = ("",),
+        add_path: bool = False
+    ) -> Parser:
         """Loads the config (single, or multiple files, or dict).
 
         Params:
@@ -113,6 +163,7 @@ class Parser:
             3. dictionary containing the config itself
 
             ignored: list of regex match strings to ignore in file names
+            add_path: if to add the config filepath
 
         Returns:
             self with the config loaded in memory
@@ -132,62 +183,40 @@ class Parser:
         if isinstance(ignored, str):
             ignored = (ignored,)
 
-        assert isinstance(ignored, tuple), "expected ignored as tuple, got {type(ignored)}"
+        assert isinstance(
+            ignored, tuple
+        ), f"expected ignored as tuple, got {type(ignored)}"
 
         # if config is None, then remove the stored config
         if config is None:
-            self.config = None
+            self.config = {}
             return self
 
         # if given dictionary then stores it and end
-        if isinstance(config, dict):
+        elif isinstance(config, dict):
+            logger.info(f"{'='*5} Loading dictionary")
             self.config = config
             return self
 
         filename, file_extension = os.path.splitext(config)
         # if the config is a single config
         if file_extension == "." + self.extension:
+            logger.info(f"{'='*5} Loading single file")
             self.config = self._load_method(config)
             return self
-
-        # idea: iterate through the root folder, parse all configs
-        # stores the folder into a queue, then literately retrieve queue to
-        # maintain folder hierarchy
-        files = os.listdir(config)
-        queue: deque[str] = deque()
 
         if self.config is None:
             self.config = {}
 
-        # first iteration to get the depth 1 keys and folders
-        for file in files:
-            # skip those in the ignored
-            if self._search_match(file, ignored):
-                continue
-            filename, file_extension = os.path.splitext(file)
-            filepath = os.path.join(config, file)
-            if file_extension == "." + self.extension:
-                self.config.update(self._load_method(filepath))
-            elif os.path.isdir(filepath):
-                queue.append(filepath)
+        self.config = self.join(self.config, config, ignored=ignored)
 
-        # while queue is not empty, repeat the procedure
-        while queue:
-            folder = queue.pop()
-            files = os.listdir(folder)
-            for file in files:
-                # skip those in the ignored
-                if self._search_match(file, ignored):
-                    continue
-                filename, file_extension = os.path.splitext(file)
-                filepath = os.path.join(folder, file)
-                base_folder = os.path.basename(folder)
-                if base_folder not in self.config:
-                    self.config[base_folder] = {}
-                if file_extension == "." + self.extension:
-                    self.config[base_folder].update(self._load_method(filepath))
-                elif os.path.isdir(filepath):
-                    queue.append(filepath)
+        # in some occasions the folder containing the config will become the
+        # level1 key, fix this by loading the values instead
+        base_folder = os.path.basename(config)
+        if base_folder in self.config:
+            self.config = self.config[base_folder]
+        if add_path:
+            self.config["config_path"] = config
 
         return self
 
@@ -232,7 +261,7 @@ class Parser:
         return self
 
     def convert(
-        self, filename: str, parser: type[Parser], config_path: Union[str, None] = None
+        self, filename: str, parser: type[Parser], config_path: Optional[str] = None
     ) -> Parser:
         """Converts the config file into another file extension.
 

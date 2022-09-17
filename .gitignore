@@ -5,7 +5,7 @@
 /.ipynb_checkpoints/
 
 # ignore python cache
-*/__pycache__/*
+**/*/__pycache__/
 *.egg-info/
 /.eggs/
 build/
