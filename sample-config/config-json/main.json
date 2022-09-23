@@ -1,0 +1,9 @@
+{
+  "name": "config-01",
+  "training": true,
+  "parameters": {
+    "num_nodes": 200,
+    "num_samples": 100,
+    "max_time": 40
+  }
+}

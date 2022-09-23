@@ -1,0 +1,5 @@
+# defining the load function
+---
+function2:
+  name: "load"
+  param: "col"
