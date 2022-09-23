@@ -4,6 +4,7 @@ import argparse
 import logging
 import json
 import sys
+import os
 
 from configen.parsers import JsonParser, YamlParser
 from configen.utils import merge
@@ -23,9 +24,6 @@ def entry(args):
         "path", help="path to the config file/folder", type=str)
     parser.add_argument(
         "-o", "--output", help="path to save the loaded config", type=str)
-    parser.add_argument(
-        "-f", "--format", help="config output format",
-        choices=["json", "yaml"], default="json", type=str)
     parser.add_argument(
         "-i", "--ignored",
         nargs="*",
@@ -47,7 +45,6 @@ def entry(args):
     # variables needed
     config_path = args.path
     output_path = args.output
-    output_format = args.format
     ignored = tuple(args.ignored) if args.ignored else ()
     append_dict = json.loads(args.append) if args.append else {}
     read_format = args.read
@@ -62,10 +59,18 @@ def entry(args):
     # initate parsers
     config_parser_dict = {
         "json": JsonParser(),
-        "yaml": YamlParser()
+        "yml": YamlParser()
     }
-    if read_format == "*":
+    if read_format == ["*"]:
         read_format = list(config_parser_dict.keys())
+    output_name, output_format = os.path.splitext(output_path)
+    output_format = output_format.replace(".", "")
+
+    logger.debug(f"{config_path=}")
+    logger.debug(f"{output_path=}")
+    logger.debug(f"{ignored=}")
+    logger.debug(f"{append_dict=}")
+    logger.debug(f"{read_format=}")
 
     # load config
     for config_parser_name in read_format:
