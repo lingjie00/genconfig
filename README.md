@@ -118,6 +118,12 @@ The API documentation is available at
     # supports regex matching
     configen config_path -o config.json --ignore "config1.json" "config2.yaml" "debug.*json"
     ```
+- keep
+    - Different from ignored, instead read only files with matching file name
+    ```bash
+    # supports regex matching
+    configen config_path -o config.json --keep "only_this_config.yaml"
+    ```
 - verbose
     - the level of logging to display
     ```bash
@@ -152,11 +158,6 @@ pip install .
 
 ```bash
 # I do not want to create an standalone executable as of now, but the entry is executable
-# Therefor, I recommend to add the entry script to path manually, and run from there
-export configen="PATH_TO_CLONED_REPO/src/confige/cli.py"
-```
-
-```bash
-# now you can run the confige
-$configen config_path -o config.yml
+# therefore, you can run configen as a module
+python -m configen
 ```

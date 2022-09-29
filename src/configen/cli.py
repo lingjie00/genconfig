@@ -29,6 +29,11 @@ def entry(args):
         nargs="*",
         help="list of files to be ignored, support regex", type=str)
     parser.add_argument(
+        "-k", "--keep",
+        nargs="*",
+        help="""list of files to be kept (outside of keep list will not be
+            included), support regex""", type=str)
+    parser.add_argument(
         "-v", "--verbose",
         help="debug level", type=str, default="INFO")
     parser.add_argument(
@@ -46,6 +51,7 @@ def entry(args):
     config_path = args.path
     output_path = args.output
     ignored = tuple(args.ignored) if args.ignored else ()
+    keep = tuple(args.keep) if args.keep else None
     append_dict = json.loads(args.append) if args.append else {}
     read_format = args.read
 
@@ -74,8 +80,15 @@ def entry(args):
 
     # load config
     for config_parser_name in read_format:
+        logger.info(f"Reading {config_parser_name}")
         config_parser = config_parser_dict[config_parser_name]
-        config = config_parser.load(config=config_path, ignored=ignored)
+        files = [config_path]
+        if os.path.isdir(config_path):
+            files = os.listdir(config_path)
+            files = map(lambda x: os.path.join(config_path, x), files)
+        files = sorted(files)
+        for file in files:
+            config = config_parser.load(config=file, ignored=ignored, keep=keep)
         merge(mega_config, config.config)
 
     # override the append dict

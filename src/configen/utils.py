@@ -8,7 +8,8 @@ def merge(
         a: Dict[Any, Any], b: Dict[Any, Any],
         path: Optional[List[str]] = None,
         a_parent: Optional[Dict[str, str]] = None,
-        b_parent: Optional[Dict[str, str]] = None):
+        b_parent: Optional[Dict[str, str]] = None,
+        merge_conflict: bool = True):
     """Merges dictionary b into dictionary a.
 
     Handles duplicate leaf vale
@@ -31,13 +32,13 @@ def merge(
                 logger.debug(f"Same value at {current_path}")
                 pass  # same leaf value
             # if both children are list, append them
-            elif isinstance(a[key], list) and isinstance(b[key], list):
+            elif isinstance(a[key], list) and isinstance(b[key], list) and merge_conflict:
                 logger.warning(f"Merger at {current_path}")
                 a[key] += b[key]
             # conflict arise when the value of a and b are different
             # and they are not both sub-dictionary wich we can combine again
             # resolve by appending them to a list
-            else:
+            elif merge_conflict:
                 logger.warning(f"Conflict at {current_path}")
                 if a_parent is not None and b_parent is not None:
                     parent_key = path[-1]
@@ -45,6 +46,8 @@ def merge(
                         a_parent[parent_key] = [a, ]
                     a_parent[parent_key].append(b)
                     logger.warning(f"Added child to parent at {current_path}")
+            else:
+                raise ValueError(f"Conflict at {current_path}")
         # copy value from b if key not present in a
         else:
             a[key] = b[key]

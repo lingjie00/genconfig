@@ -93,14 +93,24 @@ class Parser:
         pass
 
     @staticmethod
-    def _search_match(name: str, ignored: Tuple[str]) -> bool:
-        """Checks if the name is present in the ignored list."""
+    def _search_match(name: str, check_list: Tuple[str]) -> bool:
+        """Checks if the name is present in the ignored list.
+
+        Params:
+            name: name to be checked
+            check_list: list to be check
+
+        Returns:
+            bool representing if name is in check list
+        """
+        if check_list == ("",):
+            return False
         assert isinstance(name, str), f"Expected name as str, get {type(name)}"
         assert isinstance(
-            ignored, tuple
-        ), f"Expected ignored as tuple, get {type(name)}"
+            check_list, tuple
+        ), f"Expected check_list as tuple, get {type(check_list)}"
 
-        for ignore in ignored:
+        for ignore in check_list:
             # if there is a regex match, return true
             result = re.search(ignore, name)
             if isinstance(result, re.Match):
@@ -111,13 +121,16 @@ class Parser:
             self,
             curr_config: Dict[str, Any],
             filepath: str,
-            ignored: Tuple[str]):
+            ignored: Tuple[str],
+            keep: Tuple[str] = ("",),
+            merge_conflict: bool = True):
         """Joins config.
 
         Params:
             curr_config: the existing loaded config
             filepath: file path to the new config to be loaded
             ignored: list of file names to be ignored
+            merge_conflict: if to merge the conflicts
 
         Returns:
             updated config
@@ -126,17 +139,24 @@ class Parser:
         logger.debug(f"{filepath=}")
         # base folder will be used as the key
         base_folder = os.path.basename(filepath)
-        filename, file_extension = os.path.splitext(filepath)
+        filename, file_extension = os.path.splitext(base_folder)
+        logger.debug(f"Joining {filename=} with {file_extension=}")
 
-        if self._search_match(filepath, ignored):
+        if self._search_match(filename, ignored):
             # ignore the file if it's in the ignored list
+            logger.debug(f"{filename} is in ignored list, ignored")
+            return curr_config
+
+        elif keep != ("",) and not self._search_match(filename, keep):
+            # not in the keep list
+            logger.debug(f"{filename} not in keep list, ignored")
             return curr_config
 
         if file_extension == "." + self.extension:
             # load the file if it's of the config format
             logger.info(f"{'='*5} Reading {filepath}")
             new_config = self._load_method(filepath)
-            curr_config = merge(curr_config, new_config)
+            curr_config = merge(curr_config, new_config, merge_conflict=merge_conflict)
             logger.debug(f"New config = {curr_config}")
 
         elif os.path.isdir(filepath):
@@ -151,7 +171,10 @@ class Parser:
 
     def load(
         self, config: Union[str, dict, None], ignored: Tuple[str] = ("",),
-        add_path: bool = False
+        keep: Tuple[str] = ("",),
+        add_path: bool = False,
+        replace: bool = False,
+        merge_conflict: bool = True
     ) -> Parser:
         """Loads the config (single, or multiple files, or dict).
 
@@ -163,7 +186,10 @@ class Parser:
             3. dictionary containing the config itself
 
             ignored: list of regex match strings to ignore in file names
+            keep: list of regex match strings to keep (only)
             add_path: if to add the config filepath
+            replace: if to replace the existing config
+            merge_conflict: if to merge the conflicts
 
         Returns:
             self with the config loaded in memory
@@ -198,23 +224,30 @@ class Parser:
             self.config = config
             return self
 
+        # if replace config, remove the stored config
+        if replace:
+            self.config = {}
+
         filename, file_extension = os.path.splitext(config)
         # if the config is a single config
         if file_extension == "." + self.extension:
-            logger.info(f"{'='*5} Loading single file")
-            self.config = self._load_method(config)
-            return self
+            logger.info(f"{'='*5} Loading single file {config}")
 
         if self.config is None:
             self.config = {}
 
-        self.config = self.join(self.config, config, ignored=ignored)
+        self.config = self.join(
+                self.config, config, ignored=ignored, keep=keep, merge_conflict=merge_conflict)
 
+        # FIX:
         # in some occasions the folder containing the config will become the
         # level1 key, fix this by loading the values instead
         base_folder = os.path.basename(config)
         if base_folder in self.config:
             self.config = self.config[base_folder]
+        elif self.config.get("", None) is not None:
+            self.config = self.config[""]
+
         if add_path:
             self.config["config_path"] = config
 
@@ -284,7 +317,7 @@ class Parser:
                 config_path, str
             ), f"expected str or None got {type(config_path)}"
         assert isinstance(filename, str), f"expected str got {type(filename)}"
-        assert isinstance(parser, Parser), f"expected ktr got {type(parser)}"
+        assert isinstance(parser, Parser), f"expected str got {type(parser)}"
 
         # ensure the file extension are correct
         if config_path is not None:
