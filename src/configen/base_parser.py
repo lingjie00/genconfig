@@ -173,6 +173,7 @@ class Parser:
         self, config: Union[str, dict, None], ignored: Tuple[str] = ("",),
         keep: Tuple[str] = ("",),
         add_path: bool = False,
+        replace: bool = False,
         merge_conflict: bool = True
     ) -> Parser:
         """Loads the config (single, or multiple files, or dict).
@@ -187,6 +188,7 @@ class Parser:
             ignored: list of regex match strings to ignore in file names
             keep: list of regex match strings to keep (only)
             add_path: if to add the config filepath
+            replace: if to replace the existing config
             merge_conflict: if to merge the conflicts
 
         Returns:
@@ -221,6 +223,10 @@ class Parser:
             logger.info(f"{'='*5} Loading dictionary")
             self.config = config
             return self
+
+        # if replace config, remove the stored config
+        if replace:
+            self.config = {}
 
         filename, file_extension = os.path.splitext(config)
         # if the config is a single config
