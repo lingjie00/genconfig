@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/lingjie00/configen/compare/v1.0.0...v1.1.0) (2022-09-29)
+
+
+### Features
+
+* allow running configen as module from cli and other fixes ([29a0a18](https://github.com/lingjie00/configen/commit/29a0a18c58eb2ed0974bf3d0d2d1a511d65883c9))
+
+
+### Bug Fixes
+
+* corrected API doc path ([52e16e1](https://github.com/lingjie00/configen/commit/52e16e1b44b20be020f8f5d8724303ef12651952))
+
 ## 1.0.0 (2022-09-23)
 
 
