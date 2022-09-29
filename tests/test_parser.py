@@ -53,7 +53,7 @@ class TestParser(unittest.TestCase):
             }
         }
     }
-    new_config = {"name": "new"}
+    new_config = {"name": "config-01"}
 
     # parser configs
     base_path = os.path.dirname(os.path.realpath(__file__))
@@ -196,16 +196,16 @@ class TestParser(unittest.TestCase):
         """Function return True if regex match, else False."""
         parser = Parser()
         ignored = ("pipeline.*",)
-        self.assertTrue(parser._search_match("pipeline.json", ignored=ignored))
-        self.assertFalse(parser._search_match("nihao.yml", ignored=ignored))
+        self.assertTrue(parser._search_match("pipeline.json", check_list=ignored))
+        self.assertFalse(parser._search_match("nihao.yml", check_list=ignored))
 
         ignored = ("^pipeline.*",)
-        self.assertTrue(parser._search_match("pipeline.json", ignored=ignored))
-        self.assertFalse(parser._search_match("nihao.yml", ignored=ignored))
+        self.assertTrue(parser._search_match("pipeline.json", check_list=ignored))
+        self.assertFalse(parser._search_match("nihao.yml", check_list=ignored))
 
         ignored = (".*json",)
-        self.assertTrue(parser._search_match("pipeline.json", ignored=ignored))
-        self.assertFalse(parser._search_match("nihao.yml", ignored=ignored))
+        self.assertTrue(parser._search_match("pipeline.json", check_list=ignored))
+        self.assertFalse(parser._search_match("nihao.yml", check_list=ignored))
 
     def test_ignore(self):
         """Function should be able to ignore some config files."""
@@ -215,10 +215,8 @@ class TestParser(unittest.TestCase):
         for parser in self.parsers:
             parser = parser()
             ext = parser.extension
-            parser.load(config=self.config_folder[ext], ignored="pipeline.*")
+            parser.load(config=self.config_folder[ext], ignored=("pipeline.*",))
             loaded_config = dict(parser.config)
-            print(loaded_config)
-            print(config_truth)
             self.assertEqual(loaded_config, config_truth, parser)
 
     def test_convert(self):
