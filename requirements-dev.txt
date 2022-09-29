@@ -3,6 +3,7 @@ python-lsp-server[all]
 
 # testing
 pytest
+pytest-cov
 coverage
 
 # linter and formatting
