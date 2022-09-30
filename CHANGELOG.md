@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/lingjie00/configen/compare/v1.1.0...v1.1.1) (2022-09-30)
+
+
+### Bug Fixes
+
+* change reading order from parser to file order ([8d6084c](https://github.com/lingjie00/configen/commit/8d6084c9d09940632d5b19751089d4de28b5d37a))
+
 ## [1.1.0](https://github.com/lingjie00/configen/compare/v1.0.0...v1.1.0) (2022-09-29)
 
 
