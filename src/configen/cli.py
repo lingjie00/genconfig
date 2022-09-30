@@ -78,18 +78,23 @@ def entry(args):
     logger.debug(f"{append_dict=}")
     logger.debug(f"{read_format=}")
 
-    # load config
-    for config_parser_name in read_format:
-        logger.info(f"Reading {config_parser_name}")
-        config_parser = config_parser_dict[config_parser_name]
-        files = [config_path]
-        if os.path.isdir(config_path):
-            files = os.listdir(config_path)
-            files = map(lambda x: os.path.join(config_path, x), files)
-        files = sorted(files)
-        for file in files:
+    # load config by folder structure
+    file = [config_path]
+    if os.path.isdir(config_path):
+        files = os.listdir(config_path)
+        files = map(lambda x: os.path.join(config_path, x), files)
+    files = sorted(files)
+    for file in files:
+        logger.info(f"Reading file {file}")
+        filename, file_extension = os.path.splitext(file)
+        file_extension = file_extension.replace(".", "")
+        # check if file is in the read_format
+        if file_extension in read_format:
+            logger.debug(f"Using {file_extension} parser")
+            # read
+            config_parser = config_parser_dict[file_extension]
             config = config_parser.load(config=file, ignored=ignored, keep=keep)
-        merge(mega_config, config.config)
+            merge(mega_config, config.config)
 
     # override the append dict
     if append_dict:
