@@ -157,7 +157,9 @@ pip install .
 ```
 
 ```bash
-# I do not want to create an standalone executable as of now, but the entry is executable
-# therefore, you can run configen as a module
+# you can either run configen as module
 python -m configen
+
+# or via the executable entry point
+configen
 ```

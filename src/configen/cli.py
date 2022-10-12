@@ -106,6 +106,11 @@ def entry(args):
         config_parser_dict[output_format].write(output_path, mega_config)
 
 
+def main():
+    """Main entry point."""
+    return entry(sys.argv[1:])
+
+
 if __name__ == "__main__":
     logger.info("Start Configen command line interface")
-    entry(sys.argv[1:])
+    main()

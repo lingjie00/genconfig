@@ -16,7 +16,8 @@ setuptools.setup(
     long_description=long_desc,
     long_description_content_type="text/markdown",
     url="https://github.com/lingjie00/configen",
-    project_urls={"Bug Tracker": "https://github.com/lingjie00/configen/issues"},
+    project_urls={
+        "Bug Tracker": "https://github.com/lingjie00/configen/issues"},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -28,4 +29,7 @@ setuptools.setup(
     setup_requires=["setuptools_scm"],
     install_requires=required,
     license="MIT",
+    entry_points={
+        "console_scripts": ["configen=configen.cli:main"]
+    }
 )
