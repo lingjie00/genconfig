@@ -1,5 +1,4 @@
-from configen.cli import entry
-import sys
+from configen.cli import main
 
 if __name__ == "__main__":
-    entry(sys.argv[1:])
+    main()

@@ -79,16 +79,13 @@ class TestParser(unittest.TestCase):
             parser = parser()
             ext = parser.extension
             # without a given file extension, function will append extension
-            self.assertEqual(
-                f"config.{ext}", parser._append_extension("config"))
+            self.assertEqual(f"config.{ext}", parser._append_extension("config"))
             # with given file extension, function does not append extension
-            self.assertEqual(
-                f"config.{ext}", parser._append_extension(f"config.{ext}"))
+            self.assertEqual(f"config.{ext}", parser._append_extension(f"config.{ext}"))
             # given a extension that is not the parser extension, parser will
             # still append the extension
             self.assertEqual(
-                f"config.tmp.{ext}", parser._append_extension(
-                    f"config.tmp.{ext}")
+                f"config.tmp.{ext}", parser._append_extension(f"config.tmp.{ext}")
             )
             # raises assertion error when give non string input
             self.assertRaises(AssertionError, parser._append_extension, 123)
@@ -171,18 +168,15 @@ class TestParser(unittest.TestCase):
         """Function return True if regex match, else False."""
         parser = Parser()
         ignored = ("pipeline.*",)
-        self.assertTrue(parser._search_match(
-            "pipeline.json", check_list=ignored))
+        self.assertTrue(parser._search_match("pipeline.json", check_list=ignored))
         self.assertFalse(parser._search_match("nihao.yml", check_list=ignored))
 
         ignored = ("^pipeline.*",)
-        self.assertTrue(parser._search_match(
-            "pipeline.json", check_list=ignored))
+        self.assertTrue(parser._search_match("pipeline.json", check_list=ignored))
         self.assertFalse(parser._search_match("nihao.yml", check_list=ignored))
 
         ignored = (".*json",)
-        self.assertTrue(parser._search_match(
-            "pipeline.json", check_list=ignored))
+        self.assertTrue(parser._search_match("pipeline.json", check_list=ignored))
         self.assertFalse(parser._search_match("nihao.yml", check_list=ignored))
 
     def test_ignore(self):
@@ -193,8 +187,7 @@ class TestParser(unittest.TestCase):
         for parser in self.parsers:
             parser = parser()
             ext = parser.extension
-            parser.load(
-                config=self.config_folder[ext], ignored=("pipeline.*",))
+            parser.load(config=self.config_folder[ext], ignored=("pipeline.*",))
             loaded_config = dict(parser.config)
             self.assertEqual(loaded_config, config_truth, parser)
 
