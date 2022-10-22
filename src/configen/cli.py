@@ -41,6 +41,10 @@ def entry(args):
         help="append arbitrary dictionary in json format", type=str
     )
     parser.add_argument(
+        "-f", "--folder",
+        help="use folder name as key", type=bool, default=True
+    )
+    parser.add_argument(
         "-r", "--read",
         nargs="*",
         help="which filetype to read", type=str, default=["*"]
@@ -54,6 +58,7 @@ def entry(args):
     keep = tuple(args.keep) if args.keep else None
     append_dict = json.loads(args.append) if args.append else {}
     read_format = args.read
+    use_folder = args.folder
 
     logging.basicConfig(
         datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -62,7 +67,7 @@ def entry(args):
     )
     mega_config = {}
 
-    # initate parsers
+    # initiate parsers
     config_parser_dict = {
         "json": JsonParser(),
         "yml": YamlParser()
@@ -83,17 +88,19 @@ def entry(args):
     if os.path.isdir(config_path):
         files = os.listdir(config_path)
         files = map(lambda x: os.path.join(config_path, x), files)
+    # ensure files are sorted
     files = sorted(files)
     for file in files:
         logger.info(f"Reading file {file}")
         filename, file_extension = os.path.splitext(file)
         file_extension = file_extension.replace(".", "")
         # check if file is in the read_format
-        if file_extension in read_format:
+        if file_extension in read_format or os.path.isdir(file):
             logger.debug(f"Using {file_extension} parser")
             # read
             config_parser = config_parser_dict[file_extension]
-            config = config_parser.load(config=file, ignored=ignored, keep=keep)
+            config = config_parser.load(
+                config=file, ignored=ignored, keep=keep, use_folder=use_folder)
             merge(mega_config, config.config)
 
     # override the append dict

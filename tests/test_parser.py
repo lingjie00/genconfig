@@ -12,6 +12,9 @@ from configen.parsers import parser_list
 class TestParser(unittest.TestCase):
     """Perform unit test for the parsers."""
 
+    # display all messages to compare loaded config
+    maxDiff = None
+
     parsers: Tuple[Parser] = parser_list
     """The parsers to test."""
 
@@ -228,6 +231,24 @@ class TestParser(unittest.TestCase):
                     self.assertEqual(
                         loaded_config, self.config_truth, f"{parser}, {other_parser}"
                     )
+
+    def test_folder(self):
+        """Function should be able to ignore folder names as key."""
+        # the truth is there should not be key "function"
+        # the values of "function" should be at the base level
+        config_truth = self.config_truth.copy()
+        config_truth.update(config_truth["function"])
+        config_truth.pop("function")
+
+        for parser in self.parsers:
+            parser = parser()
+            ext = parser.extension
+            # folder of config
+            config_folder = self.config_folder[ext]
+            loaded_config = parser.load(config_folder, replace=True, use_folder=False).config
+            print(loaded_config)
+            msg = f"loading {parser} with folder of config, without folder name as key"
+            self.assertEqual(loaded_config, config_truth, msg)
 
 
 if __name__ == "__main__":
