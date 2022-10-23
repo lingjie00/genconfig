@@ -103,6 +103,8 @@ have their advantages.
 The API documentation is available at
 [https://lingjie00.github.io/configen/](https://lingjie00.github.io/configen/)
 
+The GitHub repo is at [https://github.com/lingjie00/configen](https://github.com/lingjie00/configen)
+
 # Usage
 
 1. Convert a folder structure into a single json config file
@@ -141,6 +143,12 @@ The API documentation is available at
       a specific file type
     ```bash
     configen config_path -o config.json --read "json"
+    ```
+- folder
+    - useful to ignore folder names as key, then user can arrange config files
+      in any subfolders without worrying about nested keys
+    ```bash
+    configen config_path -o config.json --folder False
     ```
 
 # Installation
