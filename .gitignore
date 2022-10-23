@@ -17,3 +17,7 @@ build/
 data/
 
 .coverage
+
+dist/
+
+.pypirc
