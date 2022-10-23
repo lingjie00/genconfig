@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/lingjie00/configen/compare/v1.2.0...v1.3.0) (2022-10-23)
+
+
+### Features
+
+* rename configen to genconfig ([9948fe0](https://github.com/lingjie00/configen/commit/9948fe0c485cb160625566ea36294b7be35f2d03))
+
+
+### Bug Fixes
+
+* updated gh actions to new genconfig name [#16](https://github.com/lingjie00/configen/issues/16) from lingjie00/feature/development ([5f3b3e2](https://github.com/lingjie00/configen/commit/5f3b3e2dd45d94948287bb01288bd1fa058b8d30))
+
 ## [1.2.0](https://github.com/lingjie00/configen/compare/v1.1.1...v1.2.0) (2022-10-23)
 
 
