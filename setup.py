@@ -9,7 +9,7 @@ with open("requirements.txt") as f:
 
 setuptools.setup(
     name="genconfig",
-    user_scm_version=True,
+    use_scm_version=True,
     author="Ling",
     author_email="lingjie@u.nus.edu",
     description="Manage Json and Yaml config using folder structure",
