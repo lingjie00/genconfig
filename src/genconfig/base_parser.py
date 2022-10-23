@@ -7,7 +7,7 @@ import os
 import re
 from typing import Tuple, Union, Optional, Any, Dict
 
-from configen.utils import merge
+from genconfig.utils import merge
 
 logger = logging.getLogger(__name__)
 
