@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/lingjie00/configen/compare/v1.1.1...v1.2.0) (2022-10-23)
+
+
+### Features
+
+* Added ability to ignore folder name as key [#12](https://github.com/lingjie00/configen/issues/12) from lingjie00/feature/development ([e061329](https://github.com/lingjie00/configen/commit/e0613294dbc3dc387830c10858e9f78206bf469e))
+
 ## [1.1.1](https://github.com/lingjie00/configen/compare/v1.1.0...v1.1.1) (2022-09-30)
 
 
