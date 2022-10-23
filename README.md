@@ -7,13 +7,19 @@ Manage config using folder structure, currently support Json and Yaml.
 
 <!-- vim-markdown-toc GFM -->
 
+* [Installation](#installation)
 * [Example usage](#example-usage)
 * [Project overview](#project-overview)
 * [Usage](#usage)
     * [Parameters](#parameters)
-* [Installation](#installation)
 
 <!-- vim-markdown-toc -->
+
+# Installation
+
+```bash
+pip install genconfig
+```
 
 # Example usage
 
@@ -150,24 +156,3 @@ The GitHub repo is at [https://github.com/lingjie00/genconfig](https://github.co
     ```bash
     genconfig config_path -o config.json --folder False
     ```
-
-# Installation
-
-```bash
-# clone the repo
-git clone https://github.com/lingjie00/genconfig
-```
-
-```bash
-cd genconfig
-# install essential packages and this repo package
-pip install .
-```
-
-```bash
-# you can either run genconfig as module
-python -m genconfig
-
-# or via the executable entry point
-genconfig
-```
