@@ -103,6 +103,8 @@ have their advantages.
 The API documentation is available at
 [https://lingjie00.github.io/configen/](https://lingjie00.github.io/configen/)
 
+The GitHub repo is at [https://github.com/lingjie00/configen](https://github.com/lingjie00/configen)
+
 # Usage
 
 1. Convert a folder structure into a single json config file
