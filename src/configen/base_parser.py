@@ -121,8 +121,9 @@ class Parser:
             self,
             curr_config: Dict[str, Any],
             filepath: str,
+            ignore_keys: Tuple[str] = ("", ),
             ignored: Tuple[str] = ("", ),
-            keep: Tuple[str] = ("",),
+            keep: Tuple[str] = ("", ),
             merge_conflict: bool = True,
             use_folder: bool = True):
         """Joins config.
@@ -130,6 +131,7 @@ class Parser:
         Params:
             curr_config: the existing loaded config
             filepath: file path to the new config to be loaded
+            ignore_keys: the folders that will not be use as keys
             ignored: list of file names to be ignored
             keep: list of file names to be kept, if not empty then load only these file names
             merge_conflict: if to merge the conflicts
@@ -139,18 +141,27 @@ class Parser:
             updated config
         """
         # the current loaded filepath
+        logger.debug(f"{curr_config=}")
         logger.debug(f"{filepath=}")
-        # base folder will be used as the key
-        base_folder = os.path.basename(filepath)
-        filename, file_extension = os.path.splitext(base_folder)
+        logger.debug(f"{ignore_keys=}")
+        logger.debug(f"{ignored=}")
+        logger.debug(f"{keep=}")
+        logger.debug(f"{merge_conflict=}")
+        logger.debug(f"{use_folder=}")
+        # get the current filename and extension
+        base_filename = os.path.basename(filepath)
+        filename, file_extension = os.path.splitext(base_filename)
         logger.debug(f"Joining {filename=} with {file_extension=}")
 
-        if isinstance(ignored, str):
-            ignored = (ignored,)
-
+        assert isinstance(
+            ignore_keys, tuple
+        ), f"expected ignored as tuple, got {type(ignore_keys)}"
         assert isinstance(
             ignored, tuple
         ), f"expected ignored as tuple, got {type(ignored)}"
+        assert isinstance(
+            keep, tuple
+        ), f"expected ignored as tuple, got {type(keep)}"
 
         if self._search_match(filename, ignored):
             # ignore the file if it's in the ignored list
@@ -167,35 +178,48 @@ class Parser:
             logger.info(f"{'='*5} Reading {filepath}")
             new_config = self._load_method(filepath)
             curr_config = merge(curr_config, new_config, merge_conflict=merge_conflict)
-            logger.debug(f"New config = {curr_config}")
 
         elif os.path.isdir(filepath):
             # if the path is a folder, iteratively add the folder files
             files = os.listdir(filepath)
+            # ensure files are in order
+            files = sorted(files)
             for file in files:
                 new_path = os.path.join(filepath, file)
+                # base folder will be used as the key
+                base_folder = os.path.basename(os.path.dirname(new_path))
+                logger.debug(f"{base_folder=}")
                 # decide if to use folder as key
-                if use_folder:
+                if use_folder and base_folder not in ignore_keys:
                     logger.debug(f"Using folder {base_folder} as key")
-                    curr_config[base_folder] = self.join(
-                        curr_config.get(base_folder, {}),
-                        new_path, ignored)
+                    use_config = curr_config.get(base_folder, {})
                 else:
                     logger.debug(f"Did not use folder {base_folder} as key")
-                    curr_config = self.join(
-                        curr_config=curr_config,
-                        filepath=new_path,
-                        ignored=ignored,
-                        keep=keep,
-                        merge_conflict=merge_conflict,
-                        use_folder=use_folder
-                    )
+                    use_config = curr_config
+
+                # generate new config
+                new_config = self.join(
+                    curr_config=use_config,
+                    ignore_keys=ignore_keys,
+                    filepath=new_path,
+                    ignored=ignored,
+                    keep=keep,
+                    merge_conflict=merge_conflict,
+                    use_folder=use_folder
+                )
+
+                # add back the new config
+                if use_folder:
+                    curr_config[base_folder] = new_config
+                else:
+                    curr_config = new_config
         return curr_config
 
     def load(
         self, config: Union[str, dict, None],
         add_path: bool = False,
         replace: bool = False,
+        ignore_keys: Tuple[str] = ("", ),
         *args, **kwargs
     ) -> Parser:
         """Loads the config (single, or multiple files, or dict).
@@ -251,21 +275,24 @@ class Parser:
         if self.config is None:
             self.config = {}
 
+        # base folder will be used as the key
+        base_folder = os.path.basename(os.path.dirname(config))
+        ignore_keys = ignore_keys + (base_folder, )
+
         self.config = self.join(
-                self.config, config,
+                self.config,
+                config,
+                ignore_keys=ignore_keys,
                 *args, **kwargs)
 
-        # FIX:
-        # in some occasions the folder containing the config will become the
-        # level1 key, fix this by loading the values instead
-        base_folder = os.path.basename(config)
+        # ensure base folder is not in configs
         if base_folder in self.config:
-            self.config = self.config[base_folder]
-        elif self.config.get("", None) is not None:
-            self.config = self.config[""]
+            self.config.pop(base_folder)
 
         if add_path:
             self.config["config_path"] = config
+
+        logger.debug(f"Config after loading: {self.config}")
 
         return self
 

@@ -142,6 +142,12 @@ The API documentation is available at
     ```bash
     configen config_path -o config.json --read "json"
     ```
+- folder
+    - useful to ignore folder names as key, then user can arrange config files
+      in any subfolders without worrying about nested keys
+    ```bash
+    configen config_path -o config.json --folder False
+    ```
 
 # Installation
 
