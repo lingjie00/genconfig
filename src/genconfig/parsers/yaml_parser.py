@@ -1,5 +1,5 @@
 from ruamel.yaml import YAML
-from configen.base_parser import Parser
+from genconfig.base_parser import Parser
 
 
 class YamlParser(Parser):

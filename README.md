@@ -1,6 +1,6 @@
-# configen
+# GenConfig
 
-[![package](https://github.com/lingjie00/configen/actions/workflows/project-actions.yml/badge.svg)](https://github.com/lingjie00/configen/actions/workflows/project-actions.yml)
+[![package](https://github.com/lingjie00/genconfig/actions/workflows/project-actions.yml/badge.svg)](https://github.com/lingjie00/genconfig/actions/workflows/project-actions.yml)
 
 Manage config using folder structure, currently support Json and Yaml.
 
@@ -31,10 +31,10 @@ Manage config using folder structure, currently support Json and Yaml.
     1 directory, 5 files
     ```
 
-2. Run the `configen`
+2. Run the `genconfig`
 
     ```bash
-    configen sample-config/config-mix -o config.json
+    genconfig sample-config/config-mix -o config.json
     ```
 
 3. Retrieve a single merged config
@@ -101,15 +101,15 @@ create while yaml allows comments and variables creation. Both Json and yaml
 have their advantages.
 
 The API documentation is available at
-[https://lingjie00.github.io/configen/](https://lingjie00.github.io/configen/)
+[https://lingjie00.github.io/genconfig/](https://lingjie00.github.io/genconfig/)
 
-The GitHub repo is at [https://github.com/lingjie00/configen](https://github.com/lingjie00/configen)
+The GitHub repo is at [https://github.com/lingjie00/genconfig](https://github.com/lingjie00/genconfig)
 
 # Usage
 
 1. Convert a folder structure into a single json config file
     ```bash
-    configen --path=folder_path --output="config.json"
+    genconfig --path=folder_path --output="config.json"
     ```
 
 ## Parameters
@@ -118,56 +118,56 @@ The GitHub repo is at [https://github.com/lingjie00/configen](https://github.com
     - User can choose to ignore some keys and not expand into sub-folders
     ```bash
     # supports regex matching
-    configen config_path -o config.json --ignore "config1.json" "config2.yaml" "debug.*json"
+    genconfig config_path -o config.json --ignore "config1.json" "config2.yaml" "debug.*json"
     ```
 - keep
     - Different from ignored, instead read only files with matching file name
     ```bash
     # supports regex matching
-    configen config_path -o config.json --keep "only_this_config.yaml"
+    genconfig config_path -o config.json --keep "only_this_config.yaml"
     ```
 - verbose
     - the level of logging to display
     ```bash
     # refer to python logging for acceptable levels
-    configen config_path -o config.json --verbose "DEBUG"
+    genconfig config_path -o config.json --verbose "DEBUG"
     ```
 - append
     - useful for manual replace/update values
     ```bash
     # input has to be in json format
-    configen config_path -o config.json --append "{'name': 'updated_name'}"
+    genconfig config_path -o config.json --append "{'name': 'updated_name'}"
     ```
 - read
     - Useful when there is a mixture of config file types but only want to read
       a specific file type
     ```bash
-    configen config_path -o config.json --read "json"
+    genconfig config_path -o config.json --read "json"
     ```
 - folder
     - useful to ignore folder names as key, then user can arrange config files
       in any subfolders without worrying about nested keys
     ```bash
-    configen config_path -o config.json --folder False
+    genconfig config_path -o config.json --folder False
     ```
 
 # Installation
 
 ```bash
 # clone the repo
-git clone https://github.com/lingjie00/configen
+git clone https://github.com/lingjie00/genconfig
 ```
 
 ```bash
-cd configen
+cd genconfig
 # install essential packages and this repo package
 pip install .
 ```
 
 ```bash
-# you can either run configen as module
-python -m configen
+# you can either run genconfig as module
+python -m genconfig
 
 # or via the executable entry point
-configen
+genconfig
 ```

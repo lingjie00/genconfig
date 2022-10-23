@@ -5,8 +5,8 @@ import unittest
 from contextlib import contextmanager
 from typing import Tuple
 
-from configen.base_parser import Parser
-from configen.parsers import parser_list
+from genconfig.base_parser import Parser
+from genconfig.parsers import parser_list
 
 
 class TestParser(unittest.TestCase):

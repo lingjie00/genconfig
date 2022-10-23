@@ -1,5 +1,5 @@
 import json
-from configen.base_parser import Parser
+from genconfig.base_parser import Parser
 
 
 class JsonParser(Parser):

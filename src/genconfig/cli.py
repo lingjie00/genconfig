@@ -6,8 +6,8 @@ import json
 import sys
 import os
 
-from configen.parsers import JsonParser, YamlParser
-from configen.utils import merge
+from genconfig.parsers import JsonParser, YamlParser
+from genconfig.utils import merge
 
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ def entry(args):
     """Command line interface entry point.
 
     Example:
-        configen config.json
+        genconfig config.json
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -145,5 +145,5 @@ def main():
 
 
 if __name__ == "__main__":
-    logger.info("Start Configen command line interface")
+    logger.info("Start GenConfig command line interface")
     main()
