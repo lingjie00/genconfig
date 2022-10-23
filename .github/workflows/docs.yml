@@ -27,7 +27,7 @@ jobs:
       - run: pip install -e .
       # install and run pdoc
       - run: pip install pdoc
-      - run: pdoc configen -d google -o docs/
+      - run: pdoc genconfig -d google -o docs/
 
       - uses: actions/upload-pages-artifact@v1
         with:
