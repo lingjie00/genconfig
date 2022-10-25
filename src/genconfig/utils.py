@@ -9,13 +9,24 @@ def merge(
         path: Optional[List[str]] = None,
         a_parent: Optional[Dict[str, str]] = None,
         b_parent: Optional[Dict[str, str]] = None,
-        merge_conflict: bool = True):
+        merge_conflict: bool = True,
+        raise_conflict: bool = True):
     """Merges dictionary b into dictionary a.
 
     Handles duplicate leaf vale
 
     shamelessly modified from
     https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries
+
+    Params:
+        a: master dictionary
+        b: dictionary to be join with a
+        path: keeping track of the current path transverse
+        a_parent: keeping track of a's current parent
+        b_parent: keeping track of b's current parent
+        merge_conflict: when facing conflict, do we merge them using list
+            structure, if set as False then we will override
+        raise_conflict: if to raise issue when facing with conflict
     """
     # path tracks the current layer in dictionary
     if path is None:
@@ -26,7 +37,8 @@ def merge(
             current_path = ".".join(path + [str(key)])
             # recursive merge the sub-dictionary
             if isinstance(a[key], dict) and isinstance(b[key], dict):
-                merge(a[key], b[key], path + [str(key)], a, b)
+                merge(a[key], b[key], path + [str(key)], a, b,
+                      merge_conflict=merge_conflict, raise_conflict=raise_conflict)
             # do nothing if the leaf value of a, b are the same
             elif a[key] == b[key]:
                 logger.debug(f"Same value at {current_path}")
@@ -46,7 +58,12 @@ def merge(
                         a_parent[parent_key] = [a, ]
                     a_parent[parent_key].append(b)
                     logger.warning(f"Added child to parent at {current_path}")
+            elif not raise_conflict:
+                # if don't merge and dont raise error, then override
+                logger.warning(f"Conflict at {current_path}, override the values")
+                a[key] = b[key]
             else:
+                # raise ValueError if do not want to merge
                 raise ValueError(f"Conflict at {current_path}")
         # copy value from b if key not present in a
         else:

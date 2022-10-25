@@ -41,6 +41,10 @@ def entry(args):
         help="append arbitrary dictionary in json format", type=str
     )
     parser.add_argument(
+        "-ap", "--append_path",
+        help="append arbitrary dictionary path in json format", type=str
+    )
+    parser.add_argument(
         "-f", "--folder",
         help="use folder name as key", type=str, default="True"
     )
@@ -61,6 +65,9 @@ def entry(args):
     ignored = tuple(args.ignored) if args.ignored else ("", )
     keep = tuple(args.keep) if args.keep else ("", )
     append_dict = json.loads(args.append) if args.append else {}
+    if args.append_path:
+        with open(args.append_path) as f:
+            append_dict = json.loads(f.read())
     read_format = args.read
     use_folder = args.folder.lower()
     config_location = os.path.basename(os.path.dirname(config_path))
@@ -132,10 +139,11 @@ def entry(args):
     # override the append dict
     if append_dict:
         logger.info(f"Override dictionary value with {append_dict}")
-    mega_config.update(append_dict)
+        merge(mega_config, append_dict, merge_conflict=False, raise_conflict=False)
 
     # save config
     if output_path is not None:
+        logger.info(f"Writing config to {output_path}")
         config_parser_dict[output_format].write(output_path, mega_config)
 
 
