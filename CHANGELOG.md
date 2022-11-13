@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/lingjie00/genconfig/compare/v1.3.0...v1.4.0) (2022-11-13)
+
+
+### Features
+
+* enable overriding with multiple config files ([b4578fb](https://github.com/lingjie00/genconfig/commit/b4578fb0d07c1485f65778338927951cb738a648))
+
 ## [1.3.0](https://github.com/lingjie00/configen/compare/v1.2.0...v1.3.0) (2022-10-23)
 
 
