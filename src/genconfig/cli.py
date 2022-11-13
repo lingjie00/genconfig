@@ -41,6 +41,11 @@ def entry(args):
         help="append arbitrary dictionary in json format", type=str
     )
     parser.add_argument(
+        "-ap", "--append_path",
+        nargs="*",
+        help="append arbitrary dictionary path (or folder) in json format", type=str
+    )
+    parser.add_argument(
         "-f", "--folder",
         help="use folder name as key", type=str, default="True"
     )
@@ -60,7 +65,6 @@ def entry(args):
     output_path = args.output
     ignored = tuple(args.ignored) if args.ignored else ("", )
     keep = tuple(args.keep) if args.keep else ("", )
-    append_dict = json.loads(args.append) if args.append else {}
     read_format = args.read
     use_folder = args.folder.lower()
     config_location = os.path.basename(os.path.dirname(config_path))
@@ -68,6 +72,18 @@ def entry(args):
     ignore_keys = [ignore_keys, ] if isinstance(ignore_keys, str) else ignore_keys
     ignore_keys = [config_location, ] + ignore_keys
     ignore_keys = tuple(ignore_keys)
+    # appending dicts is more involved
+    append_dict = json.loads(args.append) if args.append else {}
+    append_dicts = [append_dict, ]
+    paths = list(args.append_path) if args.append_path else []
+    # load all the paths
+    while paths:
+        path = paths.pop()
+        if os.path.isdir(path):
+            paths.append(os.listdir(path))
+        else:
+            with open(path) as f:
+                append_dicts.append(json.loads(f.read()))
 
     logging.basicConfig(
         datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -130,12 +146,13 @@ def entry(args):
             merge(mega_config, config.config)
 
     # override the append dict
-    if append_dict:
-        logger.info(f"Override dictionary value with {append_dict}")
-    mega_config.update(append_dict)
+    for override_dict in append_dicts:
+        logger.info(f"Override dictionary value with {override_dict}")
+        merge(mega_config, override_dict, merge_conflict=False, raise_conflict=False)
 
     # save config
     if output_path is not None:
+        logger.info(f"Writing config to {output_path}")
         config_parser_dict[output_format].write(output_path, mega_config)
 
 
