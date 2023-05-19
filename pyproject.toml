@@ -8,7 +8,6 @@ requires = [
 [tool.pytest.ini_options]
 log_cli = "true"
 log_cli_level = "INFO"
-addopts = "--cov"
-
-[tool.coverage.run]
-source = ["src"]
+addopts = [
+    "--cov=src/genconfig/"
+]
