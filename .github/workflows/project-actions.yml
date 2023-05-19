@@ -36,5 +36,4 @@ jobs:
           --max-line-length=127 --statistics
       - name: Test with pytest and coverage
         run: |
-          echo "# Coverage" >> $GITHUB_STEP_SUMMARY
-          echo pytest --cov-report term --cov=src/genconfig >> $GITHUB_STEP_SUMMARY
+          pytest --cov-report term --cov=src/genconfig
