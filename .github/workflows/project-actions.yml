@@ -36,4 +36,4 @@ jobs:
           --max-line-length=127 --statistics
       - name: Test with pytest and coverage
         run: |
-          pytest --cov-report term --cov=src/genconfig
+          pytest

@@ -38,7 +38,7 @@ class TestParser(unittest.TestCase):
 
     # parser configs
     base_path = os.path.dirname(os.path.realpath(__file__))
-    dir_path = os.path.join(base_path, os.pardir, "sample-config")
+    dir_path = os.path.join(base_path, os.pardir, os.pardir, "sample-config")
     dir_path = os.path.abspath(dir_path)
     config_path = {
         "json": os.path.join(dir_path, "sample.json"),
