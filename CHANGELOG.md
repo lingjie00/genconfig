@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/lingjie00/genconfig/compare/v1.4.0...v1.4.1) (2023-05-19)
+
+
+### Features
+
+* updated requirements and display test coverage ([#22](https://github.com/lingjie00/genconfig/issues/22)) ([5c63ae8](https://github.com/lingjie00/genconfig/commit/5c63ae805263ea75a2efde2675c279cd6655f3a5))
+
 ## [1.4.0](https://github.com/lingjie00/genconfig/compare/v1.3.0...v1.4.0) (2022-11-13)
 
 
