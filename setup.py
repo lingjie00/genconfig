@@ -7,6 +7,9 @@ with open("README.md", "r", encoding="utf-8") as f:
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
+with open("requirements-dev.txt") as f:
+    dev_required = f.read().splitlines()
+
 setuptools.setup(
     name="genconfig",
     use_scm_version=True,
@@ -28,6 +31,7 @@ setuptools.setup(
     python_requires=">=3.8",
     setup_requires=["setuptools_scm"],
     install_requires=required,
+    extras_require={"dev": dev_required},
     license="MIT",
     entry_points={
         "console_scripts": ["genconfig=genconfig.cli:main"]
