@@ -1,14 +1,7 @@
-# lsp
-python-lsp-server[all]
-
 # testing
 pytest
 pytest-cov
 coverage
-
-# linter and formatting
-black
-isort
 
 # generate API documentation
 pdoc
