@@ -31,7 +31,7 @@ setuptools.setup(
     python_requires=">=3.8",
     setup_requires=["setuptools_scm"],
     install_requires=required,
-    extra_require={"dev": dev_required},
+    extras_require={"dev": dev_required},
     license="MIT",
     entry_points={
         "console_scripts": ["genconfig=genconfig.cli:main"]
